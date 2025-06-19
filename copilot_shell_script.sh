@@ -1,47 +1,27 @@
 #!/bin/bash
 
-# Get the new assignment name from the user
-echo "Enter the new assignment name: "
-read new_assignment
 
 
-# Search for files named "config.env" and stores what it found in a file
-find . -name "config.env" > found_files.txt
+#prompt the user for a name
+echo "Welcome to the copilot shell script"
+read -p "Enter the assignment name: " assignment_name
 
 
-# If no "config.env" files is found, exit
-if [ ! -s found_files.txt ]; then
-    echo "No config.env files found!"
-    rm found_files.txt
-    exit
-fi
+
+# Find the config file
+config_file=$(find . -path "*/submission_reminder_*/config/config.env" 2>/dev/null | head -n 1)
 
 
-# Updates the second line of the "config.env" file with the new assignment name
-while read config_file
-do
-    echo "Changing $config_file"
+# Update the ASSIGNMENT value in config.env 
+sed -i "2s/ASSIGNMENT=.*/ASSIGNMENT=\"$assignment_name\"/" "$config_file"
+
+echo "Updated assignment name to: $assignment_name"
+
+# Find and run the startup script
+startup_script=$(find . -path "*/submission_reminder_*/startup.sh" 2>/dev/null | head -n 1)
 
 
-    sed -i "2s/ASSIGNMENT=.*/ASSIGNMENT=\"$new_assignment\"/" "$config_file"
+# Change to the directory containing startup.sh and then run the script 
+cd "$(dirname "$startup_script")"
 
-
-# Looks for the startup.sh file
-    folder=$(dirname "$config_file")
-    parent_folder="$folder/.."
-
-
-    if [ -f "$parent_folder/startup.sh" ]; then
-        cd "$parent_folder"
-        ./startup.sh
-        cd - > /dev/null  # go back to original folder quietly
-    else
-        echo "No startup.sh found"
-    fi
-
-    echo "Successfully changed $config_file"
-
-done < found_files.txt
-
-#To remove the file
-rm found_files.txt
+bash startup.sh

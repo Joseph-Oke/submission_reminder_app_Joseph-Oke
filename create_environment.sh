@@ -12,7 +12,7 @@ read name
 #Makes the main folder
 
 echo "Creating environment. . . ."
-dir_name="submission_remainder_${name}"
+dir_name="submission_reminder_${name}"
 mkdir $dir_name
 
 
@@ -20,8 +20,8 @@ mkdir $dir_name
 #Creates app directory structure
 
 mkdir -p $dir_name/app
-touch $dir_name/app/remainder.sh
-chmod +x $dir_name/app/remainder.sh
+touch $dir_name/app/reminder.sh
+chmod +x $dir_name/app/reminder.sh
 
 
 #Populating remainder.sh file
@@ -58,7 +58,7 @@ chmod +x $dir_name/app/remainder.sh
 
         echo 'check_submissions $submissions_file'
 
-} >> $dir_name/app/remainder.sh
+} >> $dir_name/app/reminder.sh
 
 
 
@@ -190,7 +190,7 @@ echo 'source ./config/config.env'
 
 echo 'source ./modules/functions.sh'
 
-echo './app/remainder.sh'
+echo './app/reminder.sh'
 
 } >> $dir_name/startup.sh
 
